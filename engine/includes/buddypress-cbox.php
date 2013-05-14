@@ -132,13 +132,17 @@ add_action( 'close_body', 'cbox_theme_buddypress_tour' );
  * @todo Remove this when bbPress addresses this.
  */
 function cbox_fix_bbp_new_topic_button() {
-	// if groups isn't active and the bbPress plugin isn't enabled, stop now!
-	if ( ! bp_is_active( 'groups' ) && ! function_exists( 'bbpress' ) )
+	// if groups isn't active, stop now!
+	if ( ! bp_is_active( 'groups' ) )
+		return;
+
+	// if bbPress 2 isn't enabled, stop now!
+	if ( ! function_exists( 'bbpress' ) )
 		return;
 
 	// remove the 'New Topic' button
 	// this is done because the 'bp_get_group_new_topic_button' filter doesn't
-	// work propelry
+	// work properly
 	remove_action( 'bp_group_header_actions', 'bp_group_new_topic_button' );
 
 	// If these conditions are met, this button should not be displayed
@@ -163,6 +167,21 @@ function cbox_fix_bbp_new_topic_button() {
 
 }
 add_action( 'bp_actions', 'cbox_fix_bbp_new_topic_button' );
+
+/**
+ * Make sure BuddyPress items that are attached to 'bp_head' are added to CBOX
+ * Theme.
+ *
+ * 'bp_head' is a hook that is hardcoded in bp-default's header.php.  So we
+ * add the same hook here attached to the 'wp_head' action.
+ *
+ * This hook is used by BP to add activity item feeds.  Other plugins like
+ * BuddyPress Courseware also uses this hook.
+ */
+function cbox_add_bp_head() {
+	do_action( 'bp_head' );
+}
+add_action( 'wp_head', 'cbox_add_bp_head' );
 
 //
 // Helpers

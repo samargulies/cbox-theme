@@ -18,6 +18,44 @@ add_filter( 'infinity_dashboard_menu_setup_page_title', 'cbox_theme_menu_title' 
 add_filter( 'infinity_dashboard_menu_setup_menu_title', 'cbox_theme_menu_title' );
 
 /**
+ * Hotfix to deal with WP 3.6 using newer versions of jQuery and jQuery UI.
+ *
+ * The CBOX Theme / Infinity theme options page currently works with older
+ * versions of jQuery and jQuery UI bundled with WP 3.5.
+ *
+ * This function downgrades jQuery and jQuery UI if the current site is using
+ * WP 3.6+ so the theme options page will work again.
+ *
+ * This is a temporary fix until we can migrate CBOX Theme / Infinity's JS to
+ * work with the newer versions of jQuery and jQuery UI.
+ *
+ * @link https://github.com/cuny-academic-commons/cbox-theme/issues/169
+ * @link https://github.com/PressCrew/infinity/issues/88
+ */
+function cbox_jqueryui_hotfix( $page ) {
+	// if we're not on the CBOX Theme options page, stop now!
+	if ( $page != 'appearance_page_' . INFINITY_ADMIN_PAGE ) {
+		return;
+	}
+
+	global $wp_version;
+	
+	// stop if WP version is less than 3.6
+	if ( version_compare( $wp_version, '3.6' ) < 0 ) {
+		return;
+	}
+
+	// remove jQuery core and register the older version from WP 3.5
+	wp_deregister_script( 'jquery-core' );
+	wp_register_script( 'jquery-core', '//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js', array(), '1.8.3' );
+
+	// remove jQuery UI core and register the older version from WP 3.5
+	wp_deregister_script( 'jquery-ui-core' );
+	wp_register_script( 'jquery-ui-core', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js', array('jquery'), '1.9.2', 1 );
+}
+add_action( 'admin_enqueue_scripts', 'cbox_jqueryui_hotfix', 20 );
+
+/**
  * Custom jQuery Buttons
  */
 function cbox_theme_custom_buttons()
@@ -43,6 +81,22 @@ function cbox_theme_custom_buttons()
 	</script><?php
 }
 add_action( 'close_body', 'cbox_theme_custom_buttons' );
+
+/**
+ * Create an excerpt
+ *
+ * Uses bp_create_excerpt() when available. Otherwise falls back on a very
+ * rough approximation, ignoring the fancy params passed.
+ *
+ * @since 1.0.5
+ */
+function cbox_create_excerpt( $text, $length = 425, $options = array() ) {
+	if ( !function_exists( 'bp_create_excerpt' ) ) {
+		return bp_create_excerpt( $text, $length, $options );
+	} else {
+		return substr( $text, 0, $length ) . ' [&hellip;]';
+	}
+}
 
 //
 // Slider

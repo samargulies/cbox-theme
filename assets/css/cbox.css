@@ -129,6 +129,9 @@ h1#site-title,div#site-title {
 	padding-left: 20px;
 	padding-right: 20px;
 }
+.flex-caption h3 a {
+	color: #FFF;
+}
 /* Avatars */
 ul.item-list li img.avatar,#whats-new-avatar img,.item-avatar img {
 	margin-left: 0;
@@ -179,7 +182,7 @@ ul.item-list li img.avatar {
 	display: none;
 }
 /* Don't break the menubar avatar icon in IE8 */
-#wpadminbar img { 
+#wpadminbar img {
 	max-width: none;
 }
 /* Activity Stream */
@@ -437,6 +440,19 @@ ul.item-list li div.action {
 }
 .single-bp_doc label {
 	margin-top: 20px;
+}
+.single-bp_doc #comments li.comment {
+	position: relative;
+}
+.single-bp_doc #comments .comment-author cite {
+	margin-left: 14px;
+}
+.single-bp_doc #comments .comment-meta,
+.single-bp_doc #comments p {
+	margin-left: 62px;
+}
+.single-bp_doc #comments .reply {
+	top: 28px;
 }
 .doc-tabs ul {
     margin-left: 0;

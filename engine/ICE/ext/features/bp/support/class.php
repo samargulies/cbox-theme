@@ -143,11 +143,18 @@ class ICE_Ext_Feature_Bp_Support
 
 			// blog button
 			if ( bp_is_active( 'blogs' ) ) {
-				add_action( 'bp_directory_blogs_actions',  'bp_blogs_visit_blog_button' );
+				add_action( 'bp_directory_blogs_actions',  array( $this, 'visit_blog_button') );
 			}
 		}
 	}
-
+	
+	public function visit_blog_button() {
+		bp_blogs_visit_blog_button( array(
+			'link_text'         => __( 'Visit Blog', 'buddypress' ),
+			'link_title'        => '',
+		) );
+	}
+	
 	/**
 	 * Add secondary avatar support
 	 *
